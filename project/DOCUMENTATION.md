@@ -338,7 +338,7 @@ The application will be available at: `http://127.0.0.1:8000`
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql+asyncpg://postgres:Vijay%402005@localhost:5432/job_portal` | No (has fallback) |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql+asyncpg://postgres:bavaguru12@localhost:5432/job_portal` | No (has fallback) |
 | `SECRET_KEY` | JWT signing secret | `"dev-only-change-me"` | **Yes (in production)** |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | JWT expiration time | `60` | No |
 | `COOKIE_SECURE` | Enable secure cookies (HTTPS) | `"false"` | No |

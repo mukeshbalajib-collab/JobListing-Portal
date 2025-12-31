@@ -16,7 +16,7 @@ def _get_database_url() -> str:
 	url = os.getenv("PROFILE_DATABASE_URL") or os.getenv("DATABASE_URL")
 	if not url:
 		# Match the auth-service local default (password contains '@' encoded as %40)
-		url = "postgresql+asyncpg://postgres:Vijay%402005@localhost:5432/job_portal"
+		url = "postgresql+asyncpg://postgres:bavaguru12@localhost:5432/job_listing_db"
 	return url
 
 
