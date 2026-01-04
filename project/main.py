@@ -1,32 +1,28 @@
-from contextlib import asynccontextmanager
 import os
+from contextlib import asynccontextmanager
+from typing import Optional
+
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, Query
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_
-from typing import Optional
+
+# Standardized Imports
+from project.database import engine, get_db
+from project.models import Base, Job
+from project.routes.auth_routes import router as auth_router
+from project.routes import job_routes
+from project.profile_service.routes.profile_routes import router as profile_router
+from project.profile_service.database import engine as profile_engine
+from project.profile_service.models import Base as ProfileBase
 
 load_dotenv()
 
-try: 
-    from database import engine, get_db
-    from models import Base, Job
-    from routes.auth_routes import router as auth_router
-    from profile_service.routes.profile_routes import router as profile_router
-    from profile_service.database import engine as profile_engine
-    from profile_service.models import Base as ProfileBase
-except ImportError:
-    from project.database import engine, get_db
-    from project.models import Base, Job
-    from project.routes.auth_routes import router as auth_router
-    from project.profile_service.routes.profile_routes import router as profile_router
-    from project.profile_service.database import engine as profile_engine
-    from project.profile_service.models import Base as ProfileBase
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # This automatically creates your database tables (including the new Job table)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     async with profile_engine.begin() as conn:
@@ -35,6 +31,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Job Listing Portal", lifespan=lifespan)
 
+# Setup Static Files
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -44,8 +41,10 @@ PROFILE_UPLOADS_DIR = os.path.join(PROFILE_SERVICE_DIR, "uploads")
 if os.path.isdir(PROFILE_UPLOADS_DIR):
     app.mount("/uploads", StaticFiles(directory=PROFILE_UPLOADS_DIR), name="uploads")
 
+# Include Routers
 app.include_router(auth_router)
 app.include_router(profile_router)
+app.include_router(job_routes.router)
 
 @app.get("/jobs/search", tags=["Job Search"])
 async def search_jobs(
@@ -76,4 +75,5 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    # Changed to "project.main:app" to match your folder structure
+    uvicorn.run("project.main:app", host="127.0.0.1", port=8000, reload=True)

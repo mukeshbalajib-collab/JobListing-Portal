@@ -15,7 +15,7 @@
   --secondary-hover: #3bc088;
   --secondary-light: rgba(70, 211, 154, 0.1);
 
-  /* Neutral Palette */
+  /* Neutral Palette (Dark Theme) */
   --bg: #0b1020;
   --bg-elevated: #13182b;
   --bg-hover: rgba(255, 255, 255, 0.05);
@@ -23,12 +23,16 @@
   --card-border: rgba(255, 255, 255, 0.14);
   --card-hover: rgba(255, 255, 255, 0.12);
 
-  /* Text Colors */
+  /* Standard Text Colors (For Dark Backgrounds) */
   --text: rgba(255, 255, 255, 0.92);
   --text-secondary: rgba(255, 255, 255, 0.70);
   --text-muted: rgba(255, 255, 255, 0.55);
   --text-disabled: rgba(255, 255, 255, 0.35);
-  --muted: rgba(255, 255, 255, 0.70); /* Alias for backward compatibility */
+  --muted: rgba(255, 255, 255, 0.70);
+
+  /* UPDATED: Text Colors for Light Backgrounds (Job Cards) */
+  --text-on-light: #0f172a;           /* Deep dark blue for headings */
+  --text-on-light-muted: #475569;     /* Slate gray for body/meta text */
 
   /* Status Colors */
   --success: #46d39a;
@@ -103,4 +107,3 @@
   --z-modal: 1040;
   --z-tooltip: 1050;
 }
-

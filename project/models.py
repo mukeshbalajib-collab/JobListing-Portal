@@ -1,8 +1,3 @@
-"""
-models.py
-Combined models for User Authentication and Job Listings.
-"""
-
 from datetime import datetime
 from sqlalchemy import Boolean, DateTime, Integer, String, ForeignKey, Text, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
@@ -24,8 +19,6 @@ class User(Base):
         server_default=func.now(),
     )
 
-# --- YOUR TASK: JOB MODEL FOR SEARCH ---
-
 class Job(Base):
     __tablename__ = "jobs"
 
@@ -35,10 +28,7 @@ class Job(Base):
     qualifications: Mapped[str] = mapped_column(Text, nullable=False)
     location: Mapped[str] = mapped_column(String(200), nullable=False)
     salary: Mapped[int] = mapped_column(Integer, nullable=True)
-    
-    # Connects the job to the user who posted it
     employer_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,

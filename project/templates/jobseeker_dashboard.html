@@ -5,50 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Job Seeker Dashboard - Job Portal</title>
   
-  <!-- CSS -->
   <link rel="stylesheet" href="/static/variables.css">
   <link rel="stylesheet" href="/static/base.css">
   <link rel="stylesheet" href="/static/dashboard.css">
   
-  <!-- SVG Icons (inline for simplicity) -->
+  <style>
+    /* High-Feature Status Badges */
+    .badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: capitalize; }
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    .badge-accepted { background: #dcfce7; color: #166534; }
+    .badge-rejected { background: #fee2e2; color: #991b1b; }
+    
+    /* Smooth Navigation Hover */
+    .sidebar-menu-link:hover { background: rgba(99, 102, 241, 0.1); color: var(--primary); }
+  </style>
+
   <svg style="display: none;">
-    <symbol id="icon-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <rect x="3" y="3" width="7" height="7"></rect>
-      <rect x="14" y="3" width="7" height="7"></rect>
-      <rect x="14" y="14" width="7" height="7"></rect>
-      <rect x="3" y="14" width="7" height="7"></rect>
-    </symbol>
-    <symbol id="icon-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-    </symbol>
-    <symbol id="icon-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-      <polyline points="14 2 14 8 20 8"></polyline>
-      <line x1="16" y1="13" x2="8" y2="13"></line>
-      <line x1="16" y1="17" x2="8" y2="17"></line>
-      <polyline points="10 9 9 9 8 9"></polyline>
-    </symbol>
-    <symbol id="icon-user" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-      <circle cx="12" cy="7" r="4"></circle>
-    </symbol>
-    <symbol id="icon-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-      <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-    </symbol>
-    <symbol id="icon-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <circle cx="12" cy="12" r="3"></circle>
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-    </symbol>
-    <symbol id="icon-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <polyline points="6 9 12 15 18 9"></polyline>
-    </symbol>
+    <symbol id="icon-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></symbol>
+    <symbol id="icon-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></symbol>
+    <symbol id="icon-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></symbol>
+    <symbol id="icon-user" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></symbol>
+    <symbol id="icon-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"></polyline></symbol>
   </svg>
 </head>
 <body>
   <div class="dashboard-layout">
-    <!-- Top Navbar -->
     <nav class="dashboard-navbar">
       <div class="navbar-left">
         <div class="navbar-logo">JobPortal</div>
@@ -59,188 +40,106 @@
           <button class="user-menu-trigger">
             <div class="user-avatar"></div>
             <span class="user-email">{{ email }}</span>
-            <svg class="icon" width="16" height="16">
-              <use href="#icon-chevron-down"></use>
-            </svg>
+            <svg class="icon" width="16" height="16"><use href="#icon-chevron-down"></use></svg>
           </button>
           <div class="user-menu-dropdown">
-            <a href="/profile/jobseeker" class="user-menu-item">
-              <svg class="icon" width="16" height="16">
-                <use href="#icon-user"></use>
-              </svg>
-              Profile
-            </a>
-            <a href="/dashboard/jobseeker#settings" class="user-menu-item">
-              <svg class="icon" width="16" height="16">
-                <use href="#icon-settings"></use>
-              </svg>
-              Settings
-            </a>
-            <div class="user-menu-item logout">
-              Logout
-            </div>
+            <a href="/profile/jobseeker" class="user-menu-item"><svg class="icon" width="16" height="16"><use href="#icon-user"></use></svg> Profile</a>
+            <a href="/logout" class="user-menu-item logout">Logout</a>
           </div>
         </div>
       </div>
     </nav>
 
-    <!-- Sidebar -->
     <aside class="dashboard-sidebar">
       <ul class="sidebar-menu">
-        <li class="sidebar-menu-item">
-          <a href="/dashboard/jobseeker" class="sidebar-menu-link active">
-            <svg class="sidebar-menu-icon" width="20" height="20">
-              <use href="#icon-dashboard"></use>
-            </svg>
-            <span class="sidebar-menu-text">Dashboard</span>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a href="/jobs/browse" class="sidebar-menu-link">
-            <svg class="sidebar-menu-icon" width="20" height="20">
-              <use href="#icon-briefcase"></use>
-            </svg>
-            <span class="sidebar-menu-text">Browse Jobs</span>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a href="/dashboard/jobseeker#applications" class="sidebar-menu-link">
-            <svg class="sidebar-menu-icon" width="20" height="20">
-              <use href="#icon-file-text"></use>
-            </svg>
-            <span class="sidebar-menu-text">Applied Jobs</span>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a href="/profile/jobseeker" class="sidebar-menu-link">
-            <svg class="sidebar-menu-icon" width="20" height="20">
-              <use href="#icon-user"></use>
-            </svg>
-            <span class="sidebar-menu-text">Profile</span>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a href="/profile/jobseeker#resume" class="sidebar-menu-link">
-            <svg class="sidebar-menu-icon" width="20" height="20">
-              <use href="#icon-file-text"></use>
-            </svg>
-            <span class="sidebar-menu-text">Resume</span>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a href="/dashboard/jobseeker#notifications" class="sidebar-menu-link">
-            <svg class="sidebar-menu-icon" width="20" height="20">
-              <use href="#icon-bell"></use>
-            </svg>
-            <span class="sidebar-menu-text">Notifications</span>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a href="/dashboard/jobseeker#settings" class="sidebar-menu-link">
-            <svg class="sidebar-menu-icon" width="20" height="20">
-              <use href="#icon-settings"></use>
-            </svg>
-            <span class="sidebar-menu-text">Settings</span>
-          </a>
-        </li>
+        <li class="sidebar-menu-item"><a href="/dashboard/jobseeker" class="sidebar-menu-link active"><svg class="sidebar-menu-icon" width="20" height="20"><use href="#icon-dashboard"></use></svg><span>Dashboard</span></a></li>
+        <li class="sidebar-menu-item"><a href="/jobs/browse" class="sidebar-menu-link"><svg class="sidebar-menu-icon" width="20" height="20"><use href="#icon-briefcase"></use></svg><span>Browse Jobs</span></a></li>
+        <li class="sidebar-menu-item"><a href="#applications" class="sidebar-menu-link"><svg class="sidebar-menu-icon" width="20" height="20"><use href="#icon-file-text"></use></svg><span>Applied Jobs</span></a></li>
+        <li class="sidebar-menu-item"><a href="/profile/jobseeker" class="sidebar-menu-link"><svg class="sidebar-menu-icon" width="20" height="20"><use href="#icon-user"></use></svg><span>Profile</span></a></li>
       </ul>
     </aside>
 
-    <!-- Main Content -->
     <main class="dashboard-main">
       <div class="dashboard-content">
-        <!-- Welcome Section -->
         <div class="dashboard-welcome">
-          <h1>Welcome back<span class="welcome-name"></span>!</h1>
-          <p>Manage your job applications and profile</p>
+          <h1>Welcome back, <span class="welcome-name">{{ email.split('@')[0] }}</span>!</h1>
+          <p>Track your job search progress and manage applications.</p>
         </div>
 
-        <!-- KPI Cards -->
         <div class="kpi-grid">
           <div class="kpi-card">
             <div class="kpi-label">Total Applications</div>
-            <div class="kpi-value" id="kpiTotalApplications">0</div>
-            <div class="kpi-change">
-              <span>All time</span>
-            </div>
+            <div class="kpi-value">{{ stats.total if stats else 0 }}</div>
+            <div class="kpi-change"><span>All time</span></div>
           </div>
           <div class="kpi-card">
             <div class="kpi-label">Pending</div>
-            <div class="kpi-value" id="kpiPendingApplications">0</div>
-            <div class="kpi-change">
-              <span>Awaiting review</span>
-            </div>
+            <div class="kpi-value">{{ stats.pending if stats else 0 }}</div>
+            <div class="kpi-change"><span>Awaiting review</span></div>
           </div>
           <div class="kpi-card">
             <div class="kpi-label">Accepted</div>
-            <div class="kpi-value" id="kpiAcceptedApplications">0</div>
-            <div class="kpi-change positive">
-              <span>Congratulations!</span>
-            </div>
+            <div class="kpi-value" style="color: #166534;">{{ stats.accepted if stats else 0 }}</div>
+            <div class="kpi-change positive"><span>Congratulations!</span></div>
           </div>
           <div class="kpi-card">
             <div class="kpi-label">Rejected</div>
-            <div class="kpi-value" id="kpiRejectedApplications">0</div>
-            <div class="kpi-change negative">
-              <span>Keep trying</span>
-            </div>
+            <div class="kpi-value">{{ stats.rejected if stats else 0 }}</div>
+            <div class="kpi-change negative"><span>Keep trying</span></div>
           </div>
         </div>
 
-        <!-- Applied Jobs Section -->
         <div class="content-card" id="applications">
           <div class="content-card-header">
-            <h2 class="content-card-title">Applied Jobs</h2>
-            <a href="/jobs/browse" class="btn btn-primary">Browse Jobs</a>
+            <h2 class="content-card-title">Applied Jobs History</h2>
+            <a href="/jobs/browse" class="btn btn-primary">Find More Jobs</a>
           </div>
           <div class="table-container">
             <table class="table">
               <thead>
                 <tr>
                   <th>Job Title</th>
-                  <th>Company</th>
                   <th>Status</th>
                   <th>Applied Date</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="appliedJobsTable">
-                <tr>
-                  <td colspan="5" class="empty-state-cell">
-                    <div class="empty-state">
-                      <div class="empty-state-icon">📋</div>
-                      <div class="empty-state-title">No applications yet</div>
-                      <div class="empty-state-text">Start browsing jobs to apply!</div>
-                    </div>
-                  </td>
-                </tr>
+                {% if applications %}
+                  {% for app in applications %}
+                  <tr>
+                    <td><strong>{{ app.job.title }}</strong></td>
+                    <td>
+                      <span class="badge badge-{{ app.status.lower() }}">
+                        {{ app.status }}
+                      </span>
+                    </td>
+                    <td>{{ app.created_at.strftime('%Y-%m-%d') if app.created_at else "N/A" }}</td>
+                    <td><a href="/jobs/{{ app.job_id }}" class="text-primary">View Listing</a></td>
+                  </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="4" class="empty-state-cell">
+                      <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <div class="empty-state-title">No applications yet</div>
+                        <div class="empty-state-text">Start your journey by browsing thousands of listings!</div>
+                        <br>
+                        <a href="/jobs/browse" class="btn btn-primary">Browse Jobs</a>
+                      </div>
+                    </td>
+                  </tr>
+                {% endif %}
               </tbody>
             </table>
-          </div>
-        </div>
-
-        <!-- Notifications Section -->
-        <div class="content-card" id="notifications">
-          <div class="content-card-header">
-            <h2 class="content-card-title">Notifications</h2>
-          </div>
-          <div id="notificationsList">
-            <div class="empty-state">
-              <div class="empty-state-icon">🔔</div>
-              <div class="empty-state-title">No new notifications</div>
-              <div class="empty-state-text">You're all caught up!</div>
-            </div>
           </div>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- JavaScript -->
   <script src="/static/auth.js"></script>
-  <script src="/static/roleRouter.js"></script>
-  <script src="/static/dashboardBase.js"></script>
   <script src="/static/jobseekerDashboard.js"></script>
 </body>
 </html>
-

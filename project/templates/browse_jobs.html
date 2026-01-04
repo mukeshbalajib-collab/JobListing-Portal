@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Jobs | JobPortal</title>
+    <link rel="stylesheet" href="/static/variables.css">
+    <link rel="stylesheet" href="/static/base.css">
+    <style>
+        .search-area { background: var(--bg); padding: 80px 20px; text-align: center; color: var(--text); }
+        .prompt-wrapper { max-width: 800px; margin: -40px auto 0; background: #ffffff; padding: 8px; border-radius: 50px; display: flex; box-shadow: var(--shadow-lg); border: 1px solid var(--card-border); }
+        .prompt-input { flex: 1; border: none; padding: 15px 25px; border-radius: 50px; outline: none; font-size: var(--font-size-base); color: var(--text-on-light); }
+        .btn-prompt { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: var(--font-weight-semibold); transition: all var(--transition-fast); }
+        .btn-prompt:hover { background: var(--primary-hover); }
+
+        .results-container { max-width: 900px; margin: 60px auto; padding: 0 20px; }
+        .job-card { background: #ffffff !important; padding: 25px; border-radius: var(--radius-lg); border: 1px solid var(--card-border); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); }
+        .job-title { color: var(--text-on-light) !important; font-weight: var(--font-weight-bold); margin: 0; font-size: var(--font-size-xl); }
+        .job-meta { color: var(--text-on-light-muted) !important; margin: 8px 0 0; font-size: var(--font-size-sm); display: flex; gap: 15px; }
+
+        /* --- Application Modal Styles --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); display: none; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 16px; width: 100%; max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); color: #0f172a;
+        }
+        .modal-header { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-area">
+        <h1>What are you looking for today?</h1>
+        <p style="color: var(--text-secondary);">Find your dream job with a single search.</p>
+    </div>
+
+    <div class="prompt-wrapper">
+        <input type="text" id="userPrompt" class="prompt-input" placeholder="Search Python, Remote, etc.">
+        <button class="btn-prompt" onclick="searchJobs()">Search</button>
+    </div>
+
+    <div id="resultsArea" class="results-container"></div>
+
+    <div id="applyModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalJobTitle">Apply for Job</h2>
+            </div>
+            <form id="applicationForm">
+                <input type="hidden" id="applyJobId">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="userName" required placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="userEmail" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Cover Letter / Notes</label>
+                    <textarea id="userNotes" rows="4" placeholder="Why should we hire you?"></textarea>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn-prompt" style="flex: 1;">Submit Application</button>
+                    <button type="button" class="btn-prompt" style="flex: 1; background: #64748b;" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        async function searchJobs() {
+            const prompt = document.getElementById('userPrompt').value;
+            const resArea = document.getElementById('resultsArea');
+            resArea.innerHTML = '<p style="text-align:center; color: var(--text-secondary);">Searching...</p>';
+
+            const response = await fetch(`/jobs/search/api?keyword=${encodeURIComponent(prompt)}`);
+            const jobs = await response.json();
+
+            if (jobs.length === 0) {
+                resArea.innerHTML = '<p style="text-align:center; color: var(--text-secondary);">No results.</p>';
+                return;
+            }
+
+            resArea.innerHTML = jobs.map(job => `
+                <div class="job-card">
+                    <div>
+                        <h3 class="job-title">${job.title}</h3>
+                        <div class="job-meta">
+                            <span>📍 ${job.location}</span> | <span>💰 $${job.salary}</span>
+                        </div>
+                    </div>
+                    <button class="btn-prompt" onclick="openModal(${job.id}, '${job.title}')">Apply Now</button>
+                </div>
+            `).join('');
+        }
+
+        // --- Modal Logic ---
+        function openModal(jobId, jobTitle) {
+            document.getElementById('applyJobId').value = jobId;
+            document.getElementById('modalJobTitle').innerText = `Apply for ${jobTitle}`;
+            document.getElementById('applyModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('applyModal').style.display = 'none';
+        }
+
+        document.getElementById('applicationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Here you would normally fetch() to your backend to save the application
+            alert("Application Submitted Successfully!");
+            closeModal();
+            
+            // Optional: Mark the button on the main page as 'Applied'
+        });
+    </script>
+</body>
+</html>
