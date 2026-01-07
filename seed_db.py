@@ -1,59 +1,64 @@
 import asyncio
-from project.database import AsyncSessionLocal
-from project.models import Job
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy import text
 
-async def seed_data():
-    async with AsyncSessionLocal() as db:
-        jobs = [
-            Job(
-                title="Python Backend Developer", 
-                description="Build scalable APIs using FastAPI.", 
-                qualifications="B.E/B.Tech, 2+ years Python experience",
-                location="Remote", 
-                salary=95000, 
-                employer_id=1
-            ),
-            Job(
-                title="Frontend Engineer (React)", 
-                description="Develop modern user interfaces.", 
-                qualifications="Proficiency in React and CSS",
-                location="Chennai", 
-                salary=75000, 
-                employer_id=1
-            ),
-            Job(
-                title="Data Scientist", 
-                description="Analyze datasets using Python.", 
-                qualifications="Experience with Pandas and Scikit-learn",
-                location="Bangalore", 
-                salary=120000, 
-                employer_id=1
-            ),
-            Job(
-                title="Full Stack Developer", 
-                description="Knowledge of Python is a plus.", 
-                qualifications="Experience with both SQL and NoSQL",
-                location="Remote", 
-                salary=105000, 
-                employer_id=1
-            ),
-            Job(
-                title="UI/UX Designer", 
-                description="Design clean interfaces.", 
-                qualifications="Strong portfolio in Figma/Adobe XD",
-                location="Remote", 
-                salary=70000, 
-                employer_id=1
-            )
-        ]
+async def seed_database():
+    url = "postgresql+asyncpg://postgres:bavaguru12@localhost:5432/job_listing_db"
+    engine = create_async_engine(url)
+
+    try:
+        print("Connecting to job_listing_db...")
+        async with engine.begin() as conn:
+            # 1. Ensure at least one user exists to be the employer
+            print("Checking for an employer/user...")
+            user_check = await conn.execute(text("SELECT id FROM users LIMIT 1;"))
+            user = user_check.fetchone()
+            
+            if not user:
+                print("No user found. Creating a default employer...")
+                await conn.execute(text("""
+                    INSERT INTO users (email, hashed_password, full_name, role) 
+                    VALUES ('admin@portal.com', 'dummyhash', 'Admin Employer', 'employer')
+                """))
+                user_check = await conn.execute(text("SELECT id FROM users LIMIT 1;"))
+                user = user_check.fetchone()
+            
+            employer_id = user[0]
+            print(f"Using Employer ID: {employer_id}")
+
+            # 2. Clear existing jobs
+            print("Cleaning up old job records...")
+            await conn.execute(text("TRUNCATE TABLE jobs RESTART IDENTITY CASCADE;"))
+            
+            # 3. Insert fresh data with employer_id included
+            print("Inserting fresh job data...")
+            query = text("""
+                INSERT INTO jobs (title, location, salary, description, qualifications, employer_id) 
+                VALUES (:title, :location, :salary, :description, :qualifications, :employer_id)
+            """)
+            
+            jobs = [
+                {
+                    "title": "Python Developer", "location": "Remote", "salary": 1200000, 
+                    "description": "FastAPI backend development.", 
+                    "qualifications": "Bachelor's in CS", "employer_id": employer_id
+                },
+                {
+                    "title": "Frontend Engineer", "location": "Chennai", "salary": 800000, 
+                    "description": "UI development with CSS.", 
+                    "qualifications": "JS Proficiency", "employer_id": employer_id
+                }
+            ]
+            
+            for job in jobs:
+                await conn.execute(query, job)
+                
+        print("Successfully seeded the database! ✅")
         
-        try:
-            db.add_all(jobs)
-            await db.commit()
-            print("Successfully added 5 jobs to PostgreSQL!")
-        except Exception as e:
-            await db.rollback()
-            print(f"Error seeding database: {e}")
+    except Exception as e:
+        print(f"Error occurred during seeding: {e}")
+    finally:
+        await engine.dispose()
 
 if __name__ == "__main__":
-    asyncio.run(seed_data())
+    asyncio.run(seed_database())
